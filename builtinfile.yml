@@ -1,0 +1,35 @@
+---
+- name: Playbook 1
+  hosts: all
+  tasks:
+    - name: Install Apache
+      package:
+        name: httpd
+        state: present
+    - name: Start Apache and enable it to start on boot
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+    - name: add a welcome message
+      blockinfile:
+        path: /var/www/html/index.html
+        block: |
+          Welcome to XfusionCorp!
+          This is  Nautilus sample file, created using Ansible!
+          Please do not modify this file manually!
+        marker: |
+          # Ansible managed: BEGIN
+          # Ansible managed: END
+        create: yes
+    - name: change ownership of the file
+      file:
+        path: /var/www/html/index.html
+        owner: apache
+        group: apache
+        mode: '0655'
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
+
