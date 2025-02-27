@@ -1,0 +1,57 @@
+---
+- name: Configure ACLs for Files
+  hosts: all
+  become: yes
+  tasks:
+    - name: install acl package
+      package:
+        name: acl
+        state: present
+    - name: create file on stapp01
+      file:
+        path: /opt/data/blog.txt
+        state: touch
+        owner: root
+        group: root
+        mode: '0644'
+      when: ansible_host=='172.16.238.10'
+    - name: create file on stapp02
+      file:
+        path: /opt/data/story.txt
+        state: touch
+        owner: root
+        group: root
+        mode: '0644'
+      when: ansible_host=='172.16.238.11'
+    - name: create file on stapp03
+      file:
+        path: /opt/data/media.txt
+        state: touch
+        owner: root
+        group: root
+        mode: '0644'
+      when: ansible_host=='172.16.238.12'
+    - name: Set ACLs for blog.txt on stapp01
+      acl:
+        path: /opt/data/blog.txt
+        entity: tony
+        etype: group
+        permissions: r
+        state: present
+      when: ansible_host=='172.16.238.10'
+    - name: Set ACLs for story.txt on stapp02
+      acl:
+        path: /opt/data/story.txt
+        entity: steve
+        etype: user
+        permissions: rw
+        state: present
+      when: ansible_host=='172.16.238.11'
+    - name: Set ACLs for media.txt on stapp03
+      acl:
+        path: /opt/data/media.txt
+        entity: banner
+        etype: group
+        permissions: rw
+        state: present
+      when: ansible_host=='172.16.238.12'
