@@ -1,0 +1,23 @@
+---
+- name: Replacing text in a file
+  hosts: all
+  become: yes
+  tasks:
+    - name: replace text in a file
+      replace:
+        path: /opt/data/blog.txt
+        regexp: 'xFusionCorp'
+        replace: 'Nautilus'
+      when: ansible_host=='172.16.238.10'
+    - name: replace text in a file
+      replace:
+        path: /opt/data/story.txt
+        regexp: 'Nautilus'
+        replace: 'KodeKloud'
+      when: ansible_host=='172.16.238.11'
+    - name: replace text in a file
+      replace:
+        path: /opt/data/media.txt
+        regexp: 'KodeKloud'
+        replace: 'xFusionCorp Industries'
+      when: ansible_host=='172.16.238.12'

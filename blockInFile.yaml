@@ -1,0 +1,30 @@
+---
+- name: Create a sample index.html file
+  hosts: all
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: create a sample index.html file at /root and display information about the node architecture
+      blockinfile:
+        path: /root/facts.txt
+        state: touch
+        mode: 0644
+        create: yes
+        block: |
+          Ansible managed node architecture is {{ ansible_architecture }}
+    - name: install httpd on all nodes
+      package:
+        name: httpd
+        state: present
+    - name: copy facts.txt to /var/www/html/index.html
+      copy:
+        src: /root/facts.txt
+        dest: /var/www/html/index.html
+        mode: 0644
+        remote_src: yes
+    - name: start httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+    

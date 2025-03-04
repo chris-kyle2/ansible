@@ -1,0 +1,49 @@
+---
+- name: install httpd server
+  hosts: all
+  become: yes
+  tasks:
+    - name: run ulimit -n 65536
+      shell:
+        cmd: ulimit -n 65536
+    - name: install httpd server
+      package:
+        name: httpd
+        state: present
+    - name: start httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+    - name: remove default index.html file
+      file:
+        path: /var/www/html/index.html
+        state: absent
+    - name: create index.html file
+      file:
+        path: /var/www/html/index.html
+        state: touch
+        owner: apache
+        group: apache
+        mode: '0655'
+    - name: add content to the index.html file
+      lineinfile:
+        path: /var/www/html/index.html
+        line: 'This is a Nautilus sample file, created using Ansible!'
+        state: present
+        create: yes
+    - name: add more content to the index.html file
+      lineinfile:
+        path: /var/www/html/index.html
+        line: 'Welcome to Nautilus Group!'
+        insertbefore: BOF
+        state: present
+        create: yes
+    - name: Print contents of /var/www/html/index.html
+      shell:
+        cmd: cat /var/www/html/index.html
+    - name: restart httpd service
+      service:
+        name: httpd
+        state: restarted
+        enabled: yes
