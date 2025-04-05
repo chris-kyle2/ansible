@@ -1,0 +1,13 @@
+---
+- name: manage Services
+  hosts: all
+  become: true
+  tasks:
+    - name: install vsftpd package on both nodes 
+      package:
+        name: vsftpd
+        state: present
+    - name: start vsftpd service on both nodes
+      service:
+        name: vsftpd
+        state: started

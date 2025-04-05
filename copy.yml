@@ -1,0 +1,10 @@
+---
+- name: Copy files to remote servers
+  hosts: all
+  become: true
+  tasks:
+    - name: Copy /usr/src/blog/index.html to  /opt/blog
+      copy:
+        src: /usr/src/blog/index.html
+        dest: /opt/blog
+        remote_src: true

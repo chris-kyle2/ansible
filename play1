@@ -1,0 +1,12 @@
+---
+- name: Show the content of /etc/resolv.conf
+  hosts: localhost
+  become: true
+  tasks: 
+    - name: Show the content of /etc/resolv.conf
+      ansible.builtin.command:
+        cmd: 'cat /etc/resolv.conf'
+      register: content
+    - name: Print the content on screen
+      ansible.builtin.debug:
+        msg: "{{content.stdout}}"

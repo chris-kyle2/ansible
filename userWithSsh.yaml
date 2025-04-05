@@ -1,0 +1,57 @@
+---
+- name: Generate SSH key Locally
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: run ssh-keygen command
+      command: ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
+      args:
+        creates: ~/.ssh/id_rsa
+    - name: read the contents of public key
+      shell: cat ~/.ssh/id_rsa.pub
+      register: public_key
+
+
+- name: Create groups
+  hosts: all
+  become: yes
+  tasks:
+    - name: create group for new users
+      group:
+        name: developers
+        state: present
+
+
+- name: Create users and copy ssh key
+  hosts: all
+  become: yes
+  vars:
+    user:
+      - rahul
+      - test
+  tasks:
+    - name: create users
+      user:
+        name: "{{item}}"
+        state: present
+        home: /home/{{item}}
+        create_home: yes
+        shell: /bin/bash
+        groups: developers
+      with_items: "{{user}}"
+
+    - name: create .ssh directory
+      file:
+        path: /home/{{item}}/.ssh
+        state: directory
+        owner: "{{item}}"
+        group: "{{item}}"
+        mode: 0700
+      with_items: "{{user}}"
+
+    - name: copy ssh key to authorized_keys file
+      authorized_key:
+        user: "{{item}}"
+        key: "{{ hostvars.localhost.public_key.stdout }}"
+        state: present
+      with_items: "{{user}}"

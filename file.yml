@@ -1,0 +1,11 @@
+---
+- name: Create file with content
+  hosts: all
+  become: true
+  tasks:
+    - name: Create a file /opt/file.txt with content This file is created by Ansible!
+      copy:
+        dest: /opt/file.txt
+        content: "This file is created by Ansible!"
+      when: ansible_host == 'node01'
+    

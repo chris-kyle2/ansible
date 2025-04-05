@@ -1,0 +1,21 @@
+---
+- name: Copy file to remote servers
+  hosts: all
+  become: true
+  tasks:
+    - name: Copy /usr/src/condition/blog.txt to /opt/condition
+      copy:
+        src: /usr/src/condition/blog.txt
+        dest: /opt/condition
+        mode: '0644'
+        owner: bob
+        group: bob
+      when: ansible_host == 'node01'
+    - name: Copy /usr/src/condition/story.txt to /opt/condition
+      copy:
+        src: /usr/src/condition/story.txt
+        dest: /opt/condition
+        mode: '0400'
+        user: sam
+        group: sam
+      when: ansible_host == 'node02'

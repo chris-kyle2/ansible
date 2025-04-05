@@ -1,0 +1,17 @@
+---
+- name: Create  files under /opt/news and change group and owner
+  hosts: all
+  become: true
+  tasks: 
+    - name: create a file blog.txt and change group owner to sam
+      file:
+        path: /opt/news/blog.txt
+        state: touch
+        group: sam
+      when: ansible_host=='node01'
+    - name: Create a file story.txt and change user owner to sam
+      file:
+        path: /opt/news/story.txt
+        state: touch
+        owner: sam
+      when: ansible_host=='node02'

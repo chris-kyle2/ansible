@@ -1,0 +1,10 @@
+---
+- name: Archive Directory
+  hosts: all
+  become: true
+  tasks:
+    - name: Archive /usr/src/ecommerce/ directory
+      archive:
+        path: /usr/src/ecommerce/
+        dest: /opt/ecommerce/demo.tar.gz
+        format: tar

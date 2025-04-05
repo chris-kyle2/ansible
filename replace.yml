@@ -1,0 +1,17 @@
+---
+- name: Replace content in a file
+  hosts: all
+  become: true
+  tasks:
+    - name: Replace Kodekloud with Ansible
+      replace:
+        path: /opt/music/blog.txt
+        regexp: 'Kodekloud'
+        replace: 'Ansible'
+      when: ansible_host == 'node01'
+    - name: Replace Ansible with Kodekloud
+      replace:
+        path: /opt/music/story.txt
+        regexp: 'Ansible'
+        replace: 'Kodekloud'
+      when: ansible_host == 'node02'

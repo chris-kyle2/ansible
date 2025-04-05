@@ -1,0 +1,10 @@
+---
+- name: Create a new user web_user
+  hosts: all
+  become: true
+  tasks:
+    - name: Create a new user web_user
+      ansible.builtin.user:
+        name: web_user
+        uid: 1040
+        group: developers

@@ -1,0 +1,13 @@
+---
+- name: Add content to a file
+  hosts: all
+  become: true
+  tasks: 
+    - name: Add content to /var/www/html/index.html on node01
+      lineinfile:
+        path: /var/www/html/index.html
+        line: 'Welcome to KodeKloud Labs!'
+        state: present
+        create: yes
+      when: ansible_host == 'node01'
+      

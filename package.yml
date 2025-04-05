@@ -1,0 +1,10 @@
+---
+- name: Install vim-enhanced package
+  hosts: localhost
+  become: true
+  connection: local
+  tasks:
+    - name: Install vim-enhanced package
+      package:
+        name: vim-enhanced
+        state: present

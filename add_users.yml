@@ -1,0 +1,35 @@
+---
+- name: Create users and groups on app servers
+  hosts: all
+  become: yes
+  vars_files:
+    - ~/playbooks/data/users.yml
+
+  tasks:
+
+    - name: Create groups
+      ansible.builtin.group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - admins
+        - developers
+
+    - name: Create developer users
+      ansible.builtin.user:
+        name: "{{ item }}"
+        group: developers
+        home: "/var/www"
+        password: "{{ passwords.dev_password }}"
+        shell: /bin/bash
+      loop: "{{ developers }}"
+
+    - name: Create admin users
+      ansible.builtin.user:
+        name: "{{ item }}"
+        group: admins
+        groups: wheel
+        append: yes
+        password: "{{ passwords.admin_password }}"
+        shell: /bin/bash
+      loop: "{{ admins }}"
