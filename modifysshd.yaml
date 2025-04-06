@@ -1,0 +1,23 @@
+# Modify /etc/ssh/sshd_config to disable root login, and restart the SSH service only if the file changed.
+
+---
+- name: Modify SSH Config
+  hosts: all
+  become: true
+  tasks:
+    - name: Disable root login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin yes'
+        line: 'PermitRootLogin no'
+        state: present
+    - name: Restart SSH service
+      service:
+        name: sshd
+        state: restarted
+      when: ansible_facts['os_family'] == 'RedHat'
+    - name: Restart SSH service
+      service:
+        name: ssh
+        state: restarted
+      when: ansible_facts['os_family'] == 'Debian'

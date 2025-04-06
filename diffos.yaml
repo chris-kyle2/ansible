@@ -1,0 +1,18 @@
+# Write a playbook that runs different tasks based on OS type (e.g., install httpd on RHEL and nginx on Debian).
+
+---
+- name: Install  packages based on OS type
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Install httpd on RHEL
+      package:
+        name: httpd
+        state: present
+      when: ansible_facts['os_family'] == ''RedHat'
+    - name: Install apache2 on Debian
+      package: 
+        name:apache2
+      state: present
+      when: ansible_facts['os_family'] == 'Debian'

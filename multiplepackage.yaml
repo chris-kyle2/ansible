@@ -1,0 +1,16 @@
+# Use a loop to install multiple packages: git, vim, htop.
+--- 
+- name: Install multiple packages
+  hosts: all
+  become: true
+  vars:
+    packages:
+      - git
+      - vim
+      - htop
+  tasks:
+    - name: install packages
+      package:
+        name: "{{item}}"
+        state: present
+      loop: "{{packages}}"

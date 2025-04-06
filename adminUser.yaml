@@ -1,0 +1,20 @@
+# Create a user named ansibleadmin with a custom shell and add them to the sudo group.
+---
+- name: Create admin user
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create sudo group
+      group: 
+        name: sudo
+        state: present
+    
+    - name: Create admin user
+      user:
+        name: ansibleadmin
+        home: /home/ansibleadmin
+        create_home: yes
+        shell: /bin/bash
+        groups: sudo
+        state: present
+      when: sudo_group.rc == 0

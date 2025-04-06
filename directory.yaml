@@ -1,0 +1,12 @@
+# Create a directory /opt/myapp with specific ownership and permissions (owner: deploy, mode: 0755).
+---
+- name: Create directory
+  hosts: all
+  become: yes
+  tasks: 
+    - name: Create directory
+      file:
+        path: /opt/myapp
+        state: directory
+        owner: adminansible
+        mode: 0755

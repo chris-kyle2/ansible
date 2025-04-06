@@ -1,0 +1,31 @@
+# / Write a playbook to ensure the crond service is running and enabled.
+
+--- 
+- name: Ensure crond service is rinning and enabled
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Install crond on CentOS
+      package:
+        name: cronie
+        state: present
+      when: ansible_facts['os_family'] == 'RedHat'
+    - name: Install crond on Ubuntu
+      package:
+        name: cron
+        state: present
+      when: ansible_facts['os_family'] == 'Debian'
+    - name: start and enable crond
+      service:
+        name: cronie
+        state: started
+        enabled: yes
+      when: ansible_facts['os_family'] == 'RedHat'
+    - name: start and enable crond
+      service:
+        name: cron
+        state: started
+        enabled: yes
+      when: ansible_facts['os_family'] == 'Debian'
+    

@@ -1,0 +1,21 @@
+---
+- name: Install and enable nginx
+  hosts: all
+  become: yes
+  tasks:
+    - name: install nginx
+      package:
+        name: nginx
+        state: present
+    - name: Enable and start nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+    - name: Check the status of nginx
+      command: systemctl status nginx
+      register: nginx_status
+    - name: Get the output of the status command
+      debug:
+        msg: "{{ nginx_status.stdout }}"
+    

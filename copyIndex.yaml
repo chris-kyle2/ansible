@@ -1,0 +1,14 @@
+# Write a playbook that copies a custom index.html to /usr/share/nginx/html on all web servers.
+
+---
+- name: Copy index.html to /usr/share/nginx/html
+  hosts: all
+  become: true
+  tasks:
+    - name: Copy index.html
+      copy:
+        src: index.html
+        dest: /usr/share/nginx/html/index.html
+        mode: 0644
+        owner: root
+        group: root
