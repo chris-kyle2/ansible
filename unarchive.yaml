@@ -1,0 +1,24 @@
+# Using Unarchive module
+---
+- name: Unarchiving using Unarchive module
+  hosts: all
+  become: true
+  vars:
+    archive_owner: "{{ hostvars[inventory_hostname].ansible_user }}"
+  tasks:
+    - name: Create /opt/sysops directory
+      file:
+        path: /opt/sysops
+        state: directory
+        owner: "{{ archive_owner }}"
+        group: "{{ archive_owner }}"
+        mode: "0755"
+    - name: Unzip /usr/src/sysops/datacenter.zip archive in /opt/sysops/ location on all app servers
+      unarchive:
+        src: /usr/src/sysops/datacenter.zip
+        dest: /opt/sysops/
+        owner: "{{ archive_owner }}"
+        group: "{{ archive_owner }}"
+        mode: "0755"
+        remote_src: yes
+        

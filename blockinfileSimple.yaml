@@ -1,0 +1,30 @@
+# Simple Use Case of Blockinfile module Adding Content in a file
+---
+- name: Adding content to index.html file at a given path
+  hosts: all
+  become: yes
+  tasks: 
+    - name: Install httpd package
+      package:
+        name: httpd
+        state: present
+    - name: Start httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+    - name: Add Content to index.html file
+      blockinfile:
+        path: /var/www/html/index.html
+        state: present
+        create: yes
+        owner: apache
+        group: apache
+        mode: 0744
+        block: |
+          Welcome to XfusionCorp!
+
+          This is  Nautilus sample file, created using Ansible!
+
+          Please do not modify this file manually!
+        

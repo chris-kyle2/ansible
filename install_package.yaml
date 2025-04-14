@@ -1,0 +1,12 @@
+# install vim-enhanced package on all  app servers using Ansible yum module.
+---
+- name: Install packages on app servers
+  hosts: all
+  become: yes
+  vars:
+    package_name: vim-enhanced
+  tasks:
+    - name: Install vim-enhanced package
+      yum:
+        name: "{{ package_name }}"
+        state: present

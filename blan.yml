@@ -1,0 +1,20 @@
+# create a blank file /tmp/nfsdata.txt on all app servers.
+--- 
+- name: Create a blank file /tmp/nfsdata.txt on all app servers.
+  hosts: all
+  become: yes
+  vars:
+    file_owner:
+      stapp01: tony
+      stapp02: steve
+      stapp03: banner
+  tasks:
+    - name: Create a blank file /tmp/nfsdata.txt on all app servers.
+      file: 
+        path: /tmp/nfsdata.txt
+        state: touch
+        owner: "{{ file_owner[inventory_hostname] }}"
+        group: "{{ file_owner[inventory_hostname] }}"
+        mode: '0644'
+      
+      

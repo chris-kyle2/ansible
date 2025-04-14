@@ -1,0 +1,16 @@
+#  archive format is tar.gz
+---
+- name: Create tar.gz type archive
+  hosts: all
+  become: yes
+  vars:
+    archive_owner: "{{ hostvars[inventory_hostname].ansible_user }}"
+  tasks:
+    - name: Create tar.gz archive
+      archive:
+        path: /usr/src/security
+        dest: /opt/security/blog.tar.gz
+        format: gz
+        owner: "{{ archive_owner }}"
+        group: "{{ archive_owner }}"
+        mode: "0644"

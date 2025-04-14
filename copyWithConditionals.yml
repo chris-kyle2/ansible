@@ -1,0 +1,32 @@
+# Copy Files to different servers 
+---
+- name: Copy Files to different servers
+  hosts: all
+  become: true
+  tasks:
+    - name: Copy blog.txt to appserver1
+      copy:
+        src: /usr/src/data/blog.txt
+        dest: /opt/data
+        owner: tony
+        group: tony
+        mode: 0755
+      when: ansible_host == '172.16.238.10'
+
+    - name: Copy story.txt to appserver2
+      copy:
+        src: /usr/src/data/story.txt
+        dest: /opt/data
+        owner: steve
+        group: steve
+        mode: 0755
+      when: ansible_host == '172.16.238.11'
+    
+    - name: Copy media.txt to appserver3
+      copy:
+        src: /usr/src/data/media.txt
+        dest: /opt/data
+        owner: banner
+        group: banner
+        mode: 0755
+      when: ansible_host == '172.16.238.12'

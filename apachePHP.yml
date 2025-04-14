@@ -1,0 +1,54 @@
+---
+- name: Configure Apache and PHP on App Server 1
+  hosts: stapp01
+  become: yes
+  vars:
+    document_root: /var/www/html/myroot
+
+  tasks:
+
+    - name: Install httpd and php packages
+      yum:
+        name:
+          - httpd
+          - php
+        state: present
+
+    - name: Ensure custom document root directory exists
+      file:
+        path: "{{ document_root }}"
+        state: directory
+        owner: apache
+        group: apache
+        mode: '0755'
+
+    - name: Update Apache default DocumentRoot
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^DocumentRoot\s+'
+        line: "DocumentRoot \"{{ document_root }}\""
+        backup: yes
+
+    - name: Update <Directory> section for new DocumentRoot
+      blockinfile:
+        path: /etc/httpd/conf/httpd.conf
+        marker: "# {mark} Managed block for custom DocumentRoot"
+        block: |
+          <Directory "{{ document_root }}">
+              AllowOverride None
+              Require all granted
+          </Directory>
+
+    - name: Deploy phpinfo.php from template
+      template:
+        src: templates/phpinfo.php.j2
+        dest: "{{ document_root }}/phpinfo.php"
+        owner: apache
+        group: apache
+        mode: '0644'
+
+    - name: Start and enable httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: yes

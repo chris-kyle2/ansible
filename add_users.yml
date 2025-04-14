@@ -1,35 +1,86 @@
 ---
-- name: Create users and groups on app servers
-  hosts: all
+- name: Create users and groups
+  hosts: stapp02
   become: yes
   vars_files:
-    - ~/playbooks/data/users.yml
+    - data/users.yml
+    - secrets/passwords.yml
 
   tasks:
-
     - name: Create groups
-      ansible.builtin.group:
+      group:
         name: "{{ item }}"
         state: present
       loop:
-        - admins
         - developers
+        - admins
+        - wheel  # for sudo users
 
     - name: Create developer users
-      ansible.builtin.user:
+      user:
         name: "{{ item }}"
         group: developers
-        home: "/var/www"
-        password: "{{ passwords.dev_password }}"
+        home: "/var/www/{{ item }}"
+        create_home: true
         shell: /bin/bash
+        password: "{{ dev_password | string | password_hash('sha512') }}"
+        state: present
       loop: "{{ developers }}"
 
     - name: Create admin users
-      ansible.builtin.user:
+      user:
         name: "{{ item }}"
+        home: "/home/{{ item }}"
+        create_home: true
         group: admins
-        groups: wheel
-        append: yes
-        password: "{{ passwords.admin_password }}"
+        groups: "wheel"
         shell: /bin/bash
+        state: present
+        password: "{{ admin_password | string | password_hash('sha512') }}"
       loop: "{{ admins }}"
+
+
+
+
+# history
+#     1  ls
+#     2  cd playbooks/
+#     3  ls
+#     4  cd data/
+#     5  ls
+#     6  cat users.yml 
+#     7  ls
+#     8  cd ../
+#     9  ls
+#    10  cd secrets/
+#    11  ls
+#    12  cat vault.txt 
+#    13  cd ..
+#    14  ls
+#    15  ansible-vault encrypt_string --vault-password-file=secrets/vault.txt 'LQfKeWWxWD' --name 'dev_password'
+#    16  ansible-vault encrypt_string --vault-password-file=secrets/vault.txt 'LQfKeWWxWD' --name 'dev_password' >> secrets/passwords.yml
+#    17  ls
+#    18  cd secrets/
+#    19  lls
+#    20  ls
+#    21  cat passwords.yml 
+#    22  ansible-vault encrypt_string --vault-password-file=secrets/vault.txt 'B4zNgHA7Ya' --name 'admin_password' >> secrets/passwords.yml
+#    23  cd ..
+#    24  ansible-vault encrypt_string --vault-password-file=secrets/vault.txt 'B4zNgHA7Ya' --name 'admin_password' >> secrets/passwords.yml
+#    25  ls
+#    26  cd secrets/
+#    27  ls
+#    28  cat passwords.yml 
+#    29  vi passwords.yml 
+#    30  cd ..
+#    31  vi inventory 
+#    32  vi ansible.cfg 
+#    33  ls
+#    34  cat inventory 
+#    35  vi add_users.yml
+#    36  ansible-playbook add_users.yml --check --diff
+#    37  rm add_users.yml 
+#    38  vi add_users.yml
+#    39  ansible-playbook add_users.yml --check --diff
+#    40  ansible-playbook add_users.yml -vv
+#    41  history

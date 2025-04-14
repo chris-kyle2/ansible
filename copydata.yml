@@ -1,0 +1,12 @@
+#  copy the /usr/src/data/index.html file to all application servers, placing it at /opt/data.
+
+---
+- name: Copy index.html to all Application Servers
+  hosts: all
+  become: yes
+  tasks:
+    - name: Copy index.html to all Application Servers
+      copy:
+        src: /usr/src/data/index.html
+        dest: /opt/data
+        mode: '0644'
